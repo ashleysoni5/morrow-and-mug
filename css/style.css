@@ -1531,3 +1531,51 @@ h2 span {
     }
 
 }
+
+/* =========================================
+   MOBILE HAMBURGER NAVIGATION
+========================================= */
+
+.menu-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--green);
+    font-size: 27px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+@media screen and (max-width: 768px) {
+
+    .navbar {
+        position: relative;
+        flex-wrap: wrap;
+    }
+
+    .menu-toggle {
+        display: block;
+        order: 2;
+    }
+
+    .nav-actions {
+        order: 3;
+    }
+
+    .nav-links {
+        display: none;
+        order: 4;
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+        padding: 20px;
+        background-color: var(--white);
+        border-top: 1px solid var(--border);
+    }
+
+    .nav-links.show {
+        display: flex;
+    }
+
+}
