@@ -194,3 +194,210 @@ document.addEventListener("keydown", function (event) {
     }
 
 });
+
+/* =========================================
+   BOOKING FORM VALIDATION
+========================================= */
+
+const bookingForm = document.getElementById("booking-form");
+
+if (bookingForm) {
+
+    const successMessage = document.getElementById("form-success");
+
+    const dateInput = document.getElementById("date");
+
+    // Prevent selecting past dates
+    const today = new Date();
+
+    const localToday = [
+        today.getFullYear(),
+        String(today.getMonth() + 1).padStart(2, "0"),
+        String(today.getDate()).padStart(2, "0")
+    ].join("-");
+
+    dateInput.min = localToday;
+
+
+    // Display error message
+    function showError(inputId, message) {
+
+        const input = document.getElementById(inputId);
+
+        const error = document.getElementById(inputId + "-error");
+
+        if (input) {
+            input.classList.add("input-error");
+            input.setAttribute("aria-invalid", "true");
+        }
+
+        if (error) {
+            error.textContent = message;
+        }
+
+    }
+
+
+    // Clear error message
+    function clearError(inputId) {
+
+        const input = document.getElementById(inputId);
+
+        const error = document.getElementById(inputId + "-error");
+
+        if (input) {
+            input.classList.remove("input-error");
+            input.setAttribute("aria-invalid", "false");
+        }
+
+        if (error) {
+            error.textContent = "";
+        }
+
+    }
+
+
+    // Remove errors while typing
+    ["name", "email", "phone", "date", "time", "guests", "seating"]
+        .forEach(id => {
+
+            const input = document.getElementById(id);
+
+            input.addEventListener("input", () => clearError(id));
+
+            input.addEventListener("change", () => clearError(id));
+
+        });
+
+
+    // Form submission
+    bookingForm.addEventListener("submit", function (event) {
+
+        event.preventDefault();
+
+        // Clear previous errors
+        ["name", "email", "phone", "date", "time", "guests", "seating"]
+            .forEach(clearError);
+
+        successMessage.hidden = true;
+
+        let isValid = true;
+
+
+        // NAME VALIDATION
+        const name = document.getElementById("name").value.trim();
+
+        if (name.length < 2 || !/^[a-zA-Z\s'-]+$/.test(name)) {
+
+            showError("name", "Please enter a valid name.");
+
+            isValid = false;
+
+        }
+
+
+        // EMAIL VALIDATION
+        const email = document.getElementById("email").value.trim();
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailPattern.test(email)) {
+
+            showError("email", "Please enter a valid email address.");
+
+            isValid = false;
+
+        }
+
+
+        // PHONE VALIDATION
+        const phone = document.getElementById("phone").value.trim();
+
+        if (!/^[0-9]{10}$/.test(phone)) {
+
+            showError("phone", "Enter a valid 10-digit mobile number.");
+
+            isValid = false;
+
+        }
+
+
+        // DATE VALIDATION
+        const date = dateInput.value;
+
+        if (!date || date < localToday) {
+
+            showError("date", "Please select today or a future date.");
+
+            isValid = false;
+
+        }
+
+
+        // TIME VALIDATION
+        const time = document.getElementById("time").value;
+
+        if (!time || time < "08:00" || time > "23:00") {
+
+            showError("time", "Choose a time between 8 AM and 11 PM.");
+
+            isValid = false;
+
+        }
+
+
+        // GUEST VALIDATION
+        const guests = Number(document.getElementById("guests").value);
+
+        if (!Number.isInteger(guests) || guests < 1 || guests > 10) {
+
+            showError("guests", "Choose between 1 and 10 guests.");
+
+            isValid = false;
+
+        }
+
+
+        // SEATING VALIDATION
+        const seating = document.getElementById("seating").value;
+
+        if (!seating) {
+
+            showError("seating", "Please select a seating preference.");
+
+            isValid = false;
+
+        }
+
+
+        // STOP IF INVALID
+        if (!isValid) {
+
+            const firstError = bookingForm.querySelector(".input-error");
+
+            if (firstError) {
+                firstError.focus();
+            }
+
+            return;
+
+        }
+
+
+        // SUCCESS MESSAGE
+        successMessage.hidden = false;
+
+        successMessage.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+        // Reset form
+        bookingForm.reset();
+
+        // Restore minimum booking date
+        dateInput.min = localToday;
+
+    });
+
+}
